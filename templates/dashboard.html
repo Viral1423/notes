@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()">
+    Toggle Theme
+</button>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div>
+
+        <div class="logo">
+            ⚡ NotesPro
+        </div>
+
+        <div class="menu">
+
+            <a href="#" class="active-link">
+                Dashboard
+            </a>
+
+            <a href="#">
+                My Notes
+            </a>
+
+            <a href="#">
+                Favorites
+            </a>
+
+            <a href="#">
+                Archived
+            </a>
+
+            <a href="#">
+                Settings
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="profile-card">
+
+        <div class="avatar">
+            {{username[0].upper()}}
+        </div>
+
+        <div>
+            <h4>{{username}}</h4>
+            <p>Premium User</p>
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main-content">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Dashboard</h1>
+            <p>Manage your notes professionally.</p>
+
+        </div>
+
+        <a href="/logout">
+
+            <button class="logout-btn">
+                Logout
+            </button>
+
+        </a>
+
+    </div>
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <h2>{{notes|length}}</h2>
+            <p>Total Notes</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>24/7</h2>
+            <p>Productivity</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <h2>⚡</h2>
+            <p>Fast Workflow</p>
+
+        </div>
+
+    </div>
+
+    <!-- ADD NOTE -->
+
+    <div class="add-note-card">
+
+        <h2>Create New Note</h2>
+
+        <form action="/add-notes" method="POST">
+
+            <input type="text"
+                   name="title"
+                   placeholder="Enter title..."
+                   required>
+
+            <textarea name="content"
+                      placeholder="Write your note..."
+                      required></textarea>
+
+            <button type="submit" class="full-btn">
+                Add Note
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input type="text"
+               id="searchInput"
+               placeholder="Search notes..."
+               onkeyup="searchNotes()">
+
+    </div>
+
+    <!-- NOTES -->
+
+    <div class="notes-grid">
+
+        {% for note in notes %}
+
+        <div class="note-card">
+
+            <div class="note-header">
+
+                <h3>{{note.title}}</h3>
+
+                <span class="note-date">
+                    {{note.created_at.strftime('%d %b %Y')}}
+                </span>
+
+            </div>
+
+            <p class="note-content">
+                {{note.content}}
+            </p>
+
+            <div class="note-actions">
+
+                <form action="/delete-note/{{note.id}}" method="POST">
+
+                    <button type="submit" class="delete-btn">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+            <form action="/update-note/{{note.id}}" method="POST">
+
+                <input type="text"
+                       name="updated_title"
+                       placeholder="Updated title..."
+                       required>
+
+                <textarea name="updated_content"
+                          placeholder="Updated content..."
+                          required></textarea>
+
+                <button type="submit">
+                    Update
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+<script>
+
+const savedTheme = localStorage.getItem("theme");
+
+if(savedTheme === "light"){
+    document.body.classList.add("light-theme");
+}
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-theme");
+
+    if(document.body.classList.contains("light-theme")){
+        localStorage.setItem("theme","light");
+    }
+
+    else{
+        localStorage.setItem("theme","dark");
+    }
+
+}
+
+function searchNotes(){
+
+    let input = document.getElementById("searchInput").value.toLowerCase()
+
+    let cards = document.querySelectorAll(".note-card")
+
+    cards.forEach(card => {
+
+        let text = card.innerText.toLowerCase()
+
+        if(text.includes(input)){
+            card.style.display = "block"
+        }
+
+        else{
+            card.style.display = "none"
+        }
+
+    })
+
+}
+
+</script>
+
+</body>
+</html>

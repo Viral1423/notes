@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()">
+    Toggle Theme
+</button>
+
+<div class="auth-container">
+
+    <div class="auth-card">
+
+        <h1>Create Account</h1>
+        <p class="subtitle">Join your personal notes app</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/signup" method="POST">
+
+            <input type="text"
+                   name="sname"
+                   placeholder="Create Username..."
+                   required>
+
+            <input type="password"
+                   name="spass"
+                   placeholder="Create Password..."
+                   required>
+
+            <button type="submit" class="full-btn">
+                Sign Up
+            </button>
+
+        </form>
+
+        <p class="bottom-text">
+            Already have an account?
+            <a href="/">Login</a>
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+const savedTheme = localStorage.getItem("theme");
+
+if(savedTheme === "light"){
+    document.body.classList.add("light-theme");
+}
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-theme");
+
+    if(document.body.classList.contains("light-theme")){
+        localStorage.setItem("theme","light");
+    }
+
+    else{
+        localStorage.setItem("theme","dark");
+    }
+
+}
+
+</script>
+
+</body>
+</html>
